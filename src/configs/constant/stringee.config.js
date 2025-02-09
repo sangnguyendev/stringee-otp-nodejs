@@ -1,0 +1,5 @@
+module.exports = {
+    STRINGEE_SID_KEY: process.env.STRINGEE_SID_KEY,
+    STRINGEE_SECRET_KEY: process.env.STRINGEE_SECRET_KEY,
+    STRINGEE_NUMBER: process.env.STRINGEE_SECRET_NUMBER
+};
