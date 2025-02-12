@@ -1,0 +1,144 @@
+<html>
+
+    <head>
+        <title>STRINGEE OTP IN CALL SAMPLE</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    </head>
+    <body style="color: white; background-color: #607D8B; margin-top: 50px;">
+
+        <div style="text-align: center;">
+            <div><h2>STRINGEE OTP IN CALL SAMPLE</h2></div>
+            <div>
+                <h2>Vui lòng nhập số điện thoại để đăng nhập</h2>
+                <div>
+                    <input style="padding: 10px;
+                        font-size: 1.2em" autocomplete="tel" type="tel" id="phone" placeholder="Số điện thoại">
+                    <br>
+                </div>
+                <div style="margin: 20px ;">
+                    <button style="font-size: 1.3em;" type="button" id="submit">Tiếp tục</button>
+                    <br>
+                    <br>
+                </div>
+            </div>
+
+            <div id="result" style="text-align: center;">
+
+            </div>
+            <div id="qrcode" style="margin: 20px;
+            text-align: center;
+            display: flex;
+            width: 100vw;
+            justify-content: center;"></div>
+    
+        </div>
+    
+
+    </body>
+
+    <script>
+        const baseUrl = `http://localhost:4000/1.0/auth`;
+        const inputElm = document.getElementById('phone');
+        const buttonElm = document.getElementById('submit');
+        const resultElm = document.getElementById('result');
+        var checkInterval = 0;
+
+        buttonElm.addEventListener('click', () => {
+            const phone =  inputElm.value;
+            fetch(`${baseUrl}/incall`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({phone: phone})
+            }).then(async (result) => {
+            
+                let data = await result.json();
+                if(data.status !== 'success') {
+                    throw Error(data.message);
+                }
+                let div = `<h4>${data.message}</h4>`;
+                div += `<h1 style="color:#FF5722">${data.data.OTPCode}</h1>`;
+
+                if(window.innerWidth < 800) {
+                    div += `<a style="font-size: 1.2em;" href="tel:${data.data.number},${data.data.OTPCode}">Gọi xác minh</a>`;
+
+                } else {
+                    // nếu trên máy tính thì hiện QR code
+                    div += `Hoặc sử dụng điện thoại quét mã dưới đây để thực hiện cuộc gọi xác minh`;
+                    document.getElementById('qrcode').innerHTML = ``;
+                    new QRCode(document.getElementById("qrcode"), `tel:${data.data.number},${data.data.OTPCode}`);
+                }
+               
+                resultElm.innerHTML = div;
+                resultElm.prepend(`.`);
+                checkVerify(data.data.authToken, phone, new Date(data.data.expireAt));
+                
+
+            }).catch(error => { 
+                alert(error.message); 
+                requestExpired();
+            });
+
+        });
+        function checkVerify(authToken, phone, expireAt) {
+
+            let body = {
+                authToken: authToken,
+                phone: phone
+            }
+            clearInterval(checkInterval);
+            checkInterval = setInterval(() => {
+
+                fetch(`${baseUrl}/incall/check`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                }).then(async (result) => {
+                    let data = await result.json();
+                    if(data.status === 'success' && data.data) {
+
+                        let div = `<h4 style="color:green">${data.message}</h4>`;
+                        div += `access token: <i>${data.data.accessToken}</i>`;
+                        resultElm.innerHTML = div;
+                        clearInterval(checkInterval);
+                        document.getElementById('qrcode').innerHTML = ``;
+
+                    } else {
+
+                        resultElm.prepend(`.`);
+
+                        // check thời gian chờ
+                        let currentTime = new Date();
+                        if(currentTime.getTime() > expireAt.getTime()) {
+                            requestExpired();
+                        }
+
+                    }
+                    
+
+                })
+
+            }, 3000);
+
+        }
+
+        // thời gian chờ đã hết
+        function requestExpired() {
+
+            clearInterval(checkInterval);
+            resultElm.innerHTML = ``;
+            document.getElementById('qrcode').innerHTML = ``;
+
+        }
+
+    </script>
+
+</html>

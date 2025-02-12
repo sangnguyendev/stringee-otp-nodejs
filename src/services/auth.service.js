@@ -56,6 +56,7 @@ class AuthService {
         if(type === "incall") {
             // nếu là loại incall thì yêu cầu user gọi đến tổng đài để xác minh, trả về mã otp để hiển thị trên màn hình ứng dụng
             return {
+                status: 'success',
                 data: {
                     number: number, 
                     authToken: RequestOTP.authToken,
@@ -68,6 +69,7 @@ class AuthService {
         // nếu là loại outcall thì thực hiện cuộc gọi từ tổng đài đến user để phát mã otp, lưu ý không trả về mã otp qua api trong trường hợp này
         await StringeeService.makeOutCallOTP(OTPCode, phone);
         return {
+            status: 'success',
             data: {
                 number: number, 
                 authToken: RequestOTP.authToken,

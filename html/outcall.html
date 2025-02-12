@@ -1,0 +1,131 @@
+<html>
+
+    <head>
+        <title>STRINGEE OTP OUT CALL SAMPLE</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    </head>
+    <body style="color: white; background-color: #607D8B; margin-top: 50px;">
+
+        <div style="text-align: center;">
+            <div><h2>STRINGEE OTP OUT CALL SAMPLE</h2></div>
+            <div>
+                <h2>Vui lòng nhập số điện thoại để tiếp tục</h2>
+                <div>
+                    <input style="padding: 10px;
+                        font-size: 1.2em" autocomplete="tel" type="tel" id="phone" placeholder="Số điện thoại">
+                    <br>
+                </div>
+                <div style="margin: 20px ;">
+                    <button style="font-size: 1.3em;" type="button" id="submit">Tiếp tục</button>
+                    <br>
+                    <br>
+                </div>
+            </div>
+        </div>
+
+        <div id="result" style="text-align: center;"></div>
+        <div id="otp" style="text-align: center; display: none;">
+
+            <div>
+                <input style="padding: 10px;
+                    font-size: 1.2em" type="text" id="inputOtp" placeholder="Mã OTP">
+                <br>
+            </div>
+            <div style="margin: 20px ;">
+                <button style="font-size: 1.3em;" type="button" id="verify">Xác minh</button>
+                <br>
+                <br>
+            </div>
+
+        </div>
+
+    
+
+    </body>
+
+    <script>
+        const baseUrl = `http://localhost:4000/1.0/auth`;
+        const inputElm = document.getElementById('phone');
+        const buttonElm = document.getElementById('submit');
+        const resultElm = document.getElementById('result');
+        const otpElm = document.getElementById('otp');
+        const inputOtpElm = document.getElementById('inputOtp');
+        const buttonVerifyElm = document.getElementById('verify');
+        var authToken = null;
+        var phone = null;
+
+        buttonElm.addEventListener('click', () => {
+            phone =  inputElm.value;
+            fetch(`${baseUrl}/outcall`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({phone: phone})
+            }).then(async (result) => {
+            
+                let data = await result.json();
+                if(data.status !== 'success') {
+                    throw Error(data.message);
+                }
+                authToken = data.data.authToken;
+                let div = `<h4>${data.message}</h4>`;
+        
+                resultElm.innerHTML = div;
+                otpElm.style.display = 'block';
+                buttonElm.setAttribute("disabled", true);
+        
+            }).catch(error => { 
+                alert(error.message);
+            });
+
+        });
+        buttonVerifyElm.addEventListener('click', () => {
+
+            let otpCode =  inputOtpElm.value;
+            verifyOTP(authToken, phone, otpCode);
+
+        });
+        function verifyOTP(authToken, phone, otpCode) {
+
+            let body = {
+                authToken: authToken,
+                phone: phone,
+                otpCode: otpCode
+            }
+
+                fetch(`${baseUrl}/outcall/verify`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                }).then(async (result) => {
+                    let data = await result.json();
+                    if(data.status === 'success' && data.data) {
+
+                        let div = `<h4 style="color:green">${data.message}</h4>`;
+                        div += `access token: <i>${data.data.accessToken}</i>`;
+                        resultElm.innerHTML = div;
+                        otpElm.style.display = 'none';
+                    } else {
+
+                        alert(data.message);
+                    }
+                    
+
+                })
+
+
+
+        }
+
+
+    </script>
+
+</html>
