@@ -6,7 +6,7 @@ const ErrorHandler = (err, req, res, next) => {
     }
     res.status(errStatus).json({
         status: 'error',
-        message: errStatus === 500 ? 'Something went wrong' : errMsg,
+        message: errMsg,
         errorCode: err.errorCode,
         errors: errStatus === 500 ? [] : err.errors || [],
         stack: process.env.NODE_ENV === 'development' ? err.stack : {}
