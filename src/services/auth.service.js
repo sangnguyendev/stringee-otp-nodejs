@@ -149,7 +149,7 @@ class AuthService {
         }
         const tokens = this.generateTokens({payload});
 
-        return {...tokens, authToken};
+        return {status: 'success', message: 'Đăng nhập thành công', data: {...tokens, authToken}};
 
     }
 
@@ -184,7 +184,7 @@ class AuthService {
             name: RequestOTP.phone
         }
         const tokens = this.generateTokens({payload});
-        return {...tokens, authToken};
+        return {status: 'success', message: 'Đăng nhập thành công', data: {...tokens, authToken}};
         
     }    
 
