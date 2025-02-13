@@ -1,0 +1,9 @@
+{
+    "apps" : [
+        {
+            "name"        : "stringee-otp-server-sample",
+            "script"      : "./server.js"
+        }
+        
+    ]
+  }
