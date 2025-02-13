@@ -1,0 +1,659 @@
+{
+	"info": {
+		"_postman_id": "317ba874-c421-4995-85d5-fa50e77d0c1a",
+		"name": "Auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "970976"
+	},
+	"item": [
+		{
+			"name": "In Call",
+			"item": [
+				{
+					"name": "In call",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"0968123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/auth/incall",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"auth",
+								"incall"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"phone\": \"0968123456\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_api_url}}/auth/incall",
+									"host": [
+										"{{base_api_url}}"
+									],
+									"path": [
+										"auth",
+										"incall"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "226"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"e2-jp1fcXOb8qCnvviHJ9vST9TWJFg\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 12 Feb 2025 04:45:15 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"number\": \"02471020032\",\n        \"authToken\": \"NothI0gDmVanthGkOYR6\",\n        \"OTPCode\": \"5839\",\n        \"expireAt\": \"2025-02-12T04:50:15.009Z\"\n    },\n    \"message\": \"Vui lòng gọi đến 02471020032 từ số điện thoại 0968123456 và nhập mã OTP\"\n}"
+						},
+						{
+							"name": "error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"phone\": \"09681234\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_api_url}}/auth/incall",
+									"host": [
+										"{{base_api_url}}"
+									],
+									"path": [
+										"auth",
+										"incall"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "726"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2d6-c0M1L0MCuavc5fGd3I9puO38luA\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 12 Feb 2025 04:46:34 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"message\": \"OTPRequest validation failed: phone: 849681234 không phải là số điện thoại hợp lệ!\",\n    \"errors\": [],\n    \"stack\": \"ValidationError: OTPRequest validation failed: phone: 849681234 không phải là số điện thoại hợp lệ!\\n    at Document.invalidate (/Users/sangnguyen/Apps_dev/crm-stringee-app/stringee-otp-nodejs/node_modules/mongoose/lib/document.js:3334:32)\\n    at /Users/sangnguyen/Apps_dev/crm-stringee-app/stringee-otp-nodejs/node_modules/mongoose/lib/document.js:3095:17\\n    at /Users/sangnguyen/Apps_dev/crm-stringee-app/stringee-otp-nodejs/node_modules/mongoose/lib/schemaType.js:1407:9\\n    at process.processTicksAndRejections (node:internal/process/task_queues:77:11)\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Check OTP Incall Status",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"authToken\": \"p3PoZ8wPASnhyImy0mlC\",\n    \"phone\": \"0968110411\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/auth/incall/check",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"auth",
+								"incall",
+								"check"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"authToken\": \"8KKlnlhnx1dkaRwWpxHY\",\n    \"phone\": \"0968123456\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_api_url}}/auth/incall/check",
+									"host": [
+										"{{base_api_url}}"
+									],
+									"path": [
+										"auth",
+										"incall",
+										"check"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "254"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"fe-8TQMhL5tabxJ7R7ZxN8DNvGMiz4\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 12 Feb 2025 06:33:45 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7InBob25lIjoiODQ5NjgxMTA0MTEiLCJuYW1lIjoiODQ5NjgxMTA0MTEifSwiaWF0IjoxNzM5MzQyMDI1LCJleHAiOjE3NDE5MzQwMjV9.B9WhKqlhX_AaEAR01qTYr8q36VepO55wvEVUBD4yfpg\",\n    \"authToken\": \"8KKlnlhnx1dkaRwWpxHY\"\n}"
+						},
+						{
+							"name": "error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"authToken\": \"8KKlnlhnx1dkaRwWpxHY\",\n    \"phone\": \"0968123456\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_api_url}}/auth/incall/check",
+									"host": [
+										"{{base_api_url}}"
+									],
+									"path": [
+										"auth",
+										"incall",
+										"check"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "493"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1ed-zcs19zwRZDUA3Hkfwsfi0PmpDxs\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 12 Feb 2025 06:32:56 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"message\": \"Đang chờ xác minh\",\n    \"errorCode\": \"00\",\n    \"errors\": [],\n    \"stack\": \"Error: Đang chờ xác minh\\n    at AuthService.checkVerifyOTPStatus (/Users/sangnguyen/Apps_dev/crm-stringee-app/stringee-otp-nodejs/src/services/auth.service.js:169:19)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\\n    at async check_verify_otp_incall (/Users/sangnguyen/Apps_dev/crm-stringee-app/stringee-otp-nodejs/src/controllers/otp-in.controller.js:31:24)\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Out Call",
+			"item": [
+				{
+					"name": "Request OTP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"0968123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/auth/outcall",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"auth",
+								"outcall"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successs",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"phone\": \"0968123456\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_api_url}}/auth/outcall",
+									"host": [
+										"{{base_api_url}}"
+									],
+									"path": [
+										"auth",
+										"outcall"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "202"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"ca-Yu6yWCMaorcy5H8nuax3hZ7teok\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 12 Feb 2025 06:51:37 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"number\": \"02471020032\",\n        \"authToken\": \"iWApxqA6tv1wAAwyvIbG\",\n        \"OTPCode\": null,\n        \"expireAt\": \"2025-02-12T06:56:36.688Z\"\n    },\n    \"message\": \"Vui lòng nhập mã OTP đã được gửi đến qua cuộc gọi\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Verify OTP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"1\",\n    \"authToken\": \"iWApxqA6tv1wAAwyvIbG\",\n    \"otpCode\": \"111\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/auth/outcall/verify",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"auth",
+								"outcall",
+								"verify"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"phone\": \"1\",\n    \"authToken\": \"iWApxqA6tv1wAAwyvIbG\",\n    \"otpCode\": \"111\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_api_url}}/auth/outcall/verify",
+									"host": [
+										"{{base_api_url}}"
+									],
+									"path": [
+										"auth",
+										"outcall",
+										"verify"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "586"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"24a-3vMfyCHwJwZ5h7I81I4Yh/01T/k\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 12 Feb 2025 06:56:47 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"message\": \"Yêu cầu không hợp lệ hoặc đã hết hạn, vui lòng thử lại\",\n    \"errorCode\": \"00\",\n    \"errors\": [],\n    \"stack\": \"Error: Yêu cầu không hợp lệ hoặc đã hết hạn, vui lòng thử lại\\n    at AuthService.verifyOTP (/Users/sangnguyen/Apps_dev/crm-stringee-app/stringee-otp-nodejs/src/services/auth.service.js:128:19)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\\n    at async verify_otp_outcall (/Users/sangnguyen/Apps_dev/crm-stringee-app/stringee-otp-nodejs/src/controllers/otp-out.controller.js:30:24)\"\n}"
+						},
+						{
+							"name": "error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"phone\": \"0968123456\",\n    \"authToken\": \"nmHFGAZzgKcrAlmGeGf6\",\n    \"otpCode\": \"111\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_api_url}}/auth/outcall/verify",
+									"host": [
+										"{{base_api_url}}"
+									],
+									"path": [
+										"auth",
+										"outcall",
+										"verify"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "538"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"21a-kT0pZVZvtmzQXonxjRd6Yg0nOeo\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 12 Feb 2025 06:57:53 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"message\": \"Mã OTP không hợp lệ, bạn còn 5 lần thử\",\n    \"errorCode\": \"00\",\n    \"errors\": [],\n    \"stack\": \"Error: Mã OTP không hợp lệ, bạn còn 5 lần thử\\n    at AuthService.verifyOTP (/Users/sangnguyen/Apps_dev/crm-stringee-app/stringee-otp-nodejs/src/services/auth.service.js:137:19)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\\n    at async verify_otp_outcall (/Users/sangnguyen/Apps_dev/crm-stringee-app/stringee-otp-nodejs/src/controllers/otp-out.controller.js:30:24)\"\n}"
+						},
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"phone\": \"0968123456\",\n    \"authToken\": \"nmHFGAZzgKcrAlmGeGf6\",\n    \"otpCode\": \"1234\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_api_url}}/auth/outcall/verify",
+									"host": [
+										"{{base_api_url}}"
+									],
+									"path": [
+										"auth",
+										"outcall",
+										"verify"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "538"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"21a-kT0pZVZvtmzQXonxjRd6Yg0nOeo\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 12 Feb 2025 06:57:53 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7InBob25lIjoiODQ5NjgxMTA0MTEiLCJuYW1lIjoiODQ5NjgxMTA0MTEifSwiaWF0IjoxNzM5MzQyMDI1LCJleHAiOjE3NDE5MzQwMjV9.B9WhKqlhX_AaEAR01qTYr8q36VepO55wvEVUBD4yfpg\",\n    \"authToken\": \"8KKlnlhnx1dkaRwWpxHY\"\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}

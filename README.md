@@ -1,5 +1,8 @@
 # Stringee OTP Call Sample
 API Backend cuộc gọi xác thực mã OTP qua 2 luồng cuộc gọi Stringee
+- Người dùng gọi đến tổng đài, nhập mã OTP trên bàn phím để xác minh tài khoản
+- Tổng đài gọi đến người dùng phát mã OTP qua cuộc gọi
+Demo nằm trong thư mục html
 
 ## Công nghệ sử dụng
 - NodeJS
