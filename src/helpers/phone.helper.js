@@ -15,6 +15,9 @@ const detectPhone = (str) => {
     if(str.substring(0, 2) === '84') {
       return '84' + str.replace(/\s+/g, "").substring(2, str.length);
     }
+    if(str.substring(0, 2) === '+84') {
+      return '84' + str.replace(/\s+/g, "").substring(2, str.length);
+    }
 
     return str;
 
