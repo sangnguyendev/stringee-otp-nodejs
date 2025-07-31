@@ -13,17 +13,16 @@ const OTPRequestSchema = new mongoose.Schema( {
             message: props => `${props.value} không phải là số điện thoại hợp lệ!`
         }
     },
-    // otpCode: {
-    //     type: String,
-    //     index: true,
-    //     required: true,
-    //     maxlength: 4,
-    //     minlength: 4
-    // },
+    otpCode: {
+        type: String,
+        index: true,
+        maxlength: 4,
+        minlength: 4
+    },
     type: {
         type: String,
         required: true,
-        enum: ["incall", "outcall"]
+        enum: ["incall", "outcall", "incall2"]
     },
     otpCodeHash: {
         type: String,

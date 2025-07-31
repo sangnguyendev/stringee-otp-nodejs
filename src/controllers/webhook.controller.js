@@ -33,8 +33,14 @@ const number_anwser_url = async(req, res, next) => {
     try {
         const {from, to} = req.query;
         const getOTPCode = await AuthService.handleIncommingCall(from, to);
-        const result = StringeeService.getStringeeSCCOInCallOTP(getOTPCode.authToken, from, to);
-        return res.send(result);
+        // getStringeeSCCOInCall2OTP
+        if(getOTPCode.type === "incall") {
+            return res.send(StringeeService.getStringeeSCCOInCallOTP(getOTPCode.authToken, from, to))
+        }
+        if(getOTPCode.type === "incall2") {
+            return res.send(StringeeService.getStringeeSCCOInCall2OTP(getOTPCode.otpCode))
+        }
+        return res.status(403).send();
     } catch (error) {
         next(error);
     }

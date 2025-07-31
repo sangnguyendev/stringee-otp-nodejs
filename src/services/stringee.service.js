@@ -107,7 +107,47 @@ class StringeeService {
 
     }
 
-    
+    /**
+     * Lấy SCCO phát mã OTP
+     * @param {string} otpCode 
+     * @returns 
+     */
+    getStringeeSCCOInCall2OTP(otpCode) {
+
+        const otpNumbers = STRINGEE_AUDIO_FILE.STRINGEE_OTP_FILE;
+
+        const codeNumbers = otpCode.split("");
+        let codeNumberPlay = [];
+        for(let i = 0; i < codeNumbers.length; i++) {
+
+            let code = parseInt(codeNumbers[i]);
+            codeNumberPlay.push(
+                {
+                    "action": "play",
+                    "fileName": otpNumbers[code],
+                    "continueWhilePlay": false
+                }
+            );
+
+        }
+        let plays = [
+            {
+                "action": "record",
+                "eventUrl": "",
+                "format": "mp3"
+            },
+            {
+                "action": "play",
+                "fileName": STRINGEE_AUDIO_FILE.STRINGEE_GREETING_OUTPUT_OTP_FILE_ID, // lời chào
+                "continueWhilePlay": false
+            }
+        ];
+
+        let actions = plays.concat(codeNumberPlay);
+
+        return actions;
+
+    }
 
     /**
      * get Stringee Token, cached lại trong db nếu cần

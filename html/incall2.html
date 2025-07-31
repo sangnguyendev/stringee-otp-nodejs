@@ -1,7 +1,7 @@
 <html>
 
     <head>
-        <title>STRINGEE OTP IN CALL SAMPLE</title>
+        <title>STRINGEE OTP OUT CALL SAMPLE</title>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
@@ -12,10 +12,10 @@
         <div style="text-align: center;">
             <div>
                 <h2>STRINGEE OTP IN CALL SAMPLE</h2>
-                <p>Bạn cần gọi đến số tổng đài để xác minh mã OTP</p>
+                <p>Bạn cần gọi đến tổng đài để nghe mã OTP</p>
             </div>
             <div>
-                <h2>Vui lòng nhập số điện thoại để đăng nhập</h2>
+                <h2>Vui lòng nhập số điện thoại để tiếp tục</h2>
                 <div>
                     <input style="padding: 10px;
                         font-size: 1.2em" autocomplete="tel" type="tel" id="phone" placeholder="Số điện thoại">
@@ -27,17 +27,24 @@
                     <br>
                 </div>
             </div>
-
-            <div id="result" style="text-align: center;">
-
-            </div>
-            <div id="qrcode" style="margin: 20px;
-            text-align: center;
-            display: flex;
-            width: 100vw;
-            justify-content: center;"></div>
-    
         </div>
+
+        <div id="result" style="text-align: center;"></div>
+        <div id="otp" style="text-align: center; display: none;">
+
+            <div>
+                <input style="padding: 10px;
+                    font-size: 1.2em" type="text" id="inputOtp" placeholder="Mã OTP">
+                <br>
+            </div>
+            <div style="margin: 20px ;">
+                <button style="font-size: 1.3em;" type="button" id="verify">Xác minh</button>
+                <br>
+                <br>
+            </div>
+
+        </div>
+
     
 
     </body>
@@ -47,11 +54,15 @@
         const inputElm = document.getElementById('phone');
         const buttonElm = document.getElementById('submit');
         const resultElm = document.getElementById('result');
-        var checkInterval = 0;
+        const otpElm = document.getElementById('otp');
+        const inputOtpElm = document.getElementById('inputOtp');
+        const buttonVerifyElm = document.getElementById('verify');
+        var authToken = null;
+        var phone = null;
 
         buttonElm.addEventListener('click', () => {
-            const phone =  inputElm.value;
-            fetch(`${baseUrl}/incall`, {
+            phone =  inputElm.value;
+            fetch(`${baseUrl}/incall2`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -64,40 +75,33 @@
                 if(data.status !== 'success') {
                     throw Error(data.message);
                 }
+                authToken = data.data.authToken;
                 let div = `<h4>${data.message}</h4>`;
-                div += `<h1 style="color:#FF5722">${data.data.OTPCode}</h1>`;
-
-                if(window.innerWidth < 800) {
-                    div += `<a style="font-size: 1.2em;" href="tel:${data.data.number},${data.data.OTPCode}">Gọi xác minh</a>`;
-
-                } else {
-                    // nếu trên máy tính thì hiện QR code
-                    div += `Hoặc sử dụng điện thoại quét mã dưới đây để thực hiện cuộc gọi xác minh`;
-                    document.getElementById('qrcode').innerHTML = ``;
-                    new QRCode(document.getElementById("qrcode"), `tel:${data.data.number},${data.data.OTPCode}`);
-                }
-               
+        
                 resultElm.innerHTML = div;
-                resultElm.prepend(`.`);
-                checkVerify(data.data.authToken, phone, new Date(data.data.expireAt));
-                
-
+                otpElm.style.display = 'block';
+                buttonElm.setAttribute("disabled", true);
+        
             }).catch(error => { 
-                alert(error.message); 
-                requestExpired();
+                alert(error.message);
             });
 
         });
-        function checkVerify(authToken, phone, expireAt) {
+        buttonVerifyElm.addEventListener('click', () => {
+
+            let otpCode =  inputOtpElm.value;
+            verifyOTP(authToken, phone, otpCode);
+
+        });
+        function verifyOTP(authToken, phone, otpCode) {
 
             let body = {
                 authToken: authToken,
-                phone: phone
+                phone: phone,
+                otpCode: otpCode
             }
-            clearInterval(checkInterval);
-            checkInterval = setInterval(() => {
 
-                fetch(`${baseUrl}/incall/check`, {
+                fetch(`${baseUrl}/incall2/verify`, {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
@@ -111,36 +115,19 @@
                         let div = `<h4 style="color:green">${data.message}</h4>`;
                         div += `access token: <i>${data.data.accessToken}</i>`;
                         resultElm.innerHTML = div;
-                        clearInterval(checkInterval);
-                        document.getElementById('qrcode').innerHTML = ``;
-
+                        otpElm.style.display = 'none';
                     } else {
 
-                        resultElm.prepend(`.`);
-
-                        // check thời gian chờ
-                        let currentTime = new Date();
-                        if(currentTime.getTime() > expireAt.getTime()) {
-                            requestExpired();
-                        }
-
+                        alert(data.message);
                     }
                     
 
                 })
 
-            }, 3000);
+
 
         }
 
-        // thời gian chờ đã hết
-        function requestExpired() {
-
-            clearInterval(checkInterval);
-            resultElm.innerHTML = ``;
-            document.getElementById('qrcode').innerHTML = ``;
-
-        }
 
     </script>
 

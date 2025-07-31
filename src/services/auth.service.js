@@ -13,7 +13,7 @@ class AuthService {
      * Gửi yêu cầu đăng nhập bằng mã OTP
      * @param {string} phone
      * @param {string} ip
-     * @param {"incall" | "outcall"} type 
+     * @param {"incall" | "outcall" | "incall2"} type 
      * @returns {Promise<{data: {number: string, authToken: string, OTPCode: string | null, expireAt: Date}, message: string}>}
      */
     async requestOTP(phone, ip, type) {
@@ -45,6 +45,7 @@ class AuthService {
 
         const RequestOTP = await OTPRequestModel.create({
             phone: PhoneLocal,
+            otpCode: OTPCode,
             otpCodeHash: HashedOTP,
             ip: ip,
             authToken: AuthToken,
@@ -64,6 +65,21 @@ class AuthService {
                     expireAt: RequestOTP.expireAt
                 },
                 message: `Vui lòng gọi đến ${number} từ số điện thoại ${phone} và nhập mã OTP`
+            }
+        }
+
+         if(type === "incall2") {
+            // nếu là loại incall2 thì yêu cầu user gọi đến tổng đài để nghe mã OTP
+
+            return {
+                status: 'success',
+                data: {
+                    number: number, 
+                    authToken: RequestOTP.authToken,
+                    OTPCode: null,
+                    expireAt: RequestOTP.expireAt
+                },
+                message: `Vui lòng gọi đến ${number} từ số điện thoại ${phone} để nghe mã OTP`
             }
         }
         // nếu là loại outcall thì thực hiện cuộc gọi từ tổng đài đến user để phát mã otp, lưu ý không trả về mã otp qua api trong trường hợp này
@@ -86,7 +102,7 @@ class AuthService {
      * Phát mã OTP cuộc gọi đến qua Stringee
      * @param {string} phone
      * @param {string} number 
-     * @returns {Promise<{otpCode: string, authToken: string}>} trả về mã OTP để phát mã OTP
+     * @returns trả về mã OTP để phát mã OTP
      */
     async handleIncommingCall(phone, number) {
 
@@ -105,7 +121,7 @@ class AuthService {
             throw new BadRequestError(`Bạn đã nhập sai mã OTP quá 5 lần, vui lòng thử lại sau 3 phút`);
         }
         // trả về mã OTP để Stringee phát mã OTP hoặc chờ nhập OTP trên bàn phím
-        return {otpCode: RequestOTP.otpCode, authToken: RequestOTP.authToken};
+        return {otpCode: RequestOTP.otpCode, authToken: RequestOTP.authToken, type: RequestOTP.type};
 
     }
 
