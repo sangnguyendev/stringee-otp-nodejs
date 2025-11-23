@@ -79,7 +79,7 @@ class AuthService {
                     OTPCode: null,
                     expireAt: RequestOTP.expireAt
                 },
-                message: `Vui lòng gọi đến ${number} từ số điện thoại ${phone} để nghe mã OTP`
+                message: `Vui lòng gọi đến <a tel="${number}">${number}</a> từ số điện thoại ${phone} để nghe mã OTP`
             }
         }
         // nếu là loại outcall thì thực hiện cuộc gọi từ tổng đài đến user để phát mã otp, lưu ý không trả về mã otp qua api trong trường hợp này
