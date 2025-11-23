@@ -64,7 +64,7 @@ class AuthService {
                     OTPCode: OTPCode,
                     expireAt: RequestOTP.expireAt
                 },
-                message: `Vui lòng gọi đến ${number} từ số điện thoại ${phone} và nhập mã OTP`
+                message: `Vui lòng gọi đến <a tel="${number}">${number}</a> từ số điện thoại ${phone} và nhập mã OTP`
             }
         }
 
