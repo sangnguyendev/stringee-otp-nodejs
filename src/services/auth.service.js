@@ -32,7 +32,7 @@ class AuthService {
             throw new ForbiddenError(`Bạn đã gửi yêu cầu quá nhiều lần, vui lòng thử lại sau 5 phút`);
         }
 
-        var OTPCode = randomstring.generate({length: 4, charset: 'numeric'});
+        const OTPCode = randomstring.generate({length: 4, charset: 'numeric'});
         
         // Hashed mã otp trước khi lưu vào db
         const HashedOTP = await bcrypt.hash(OTPCode, 10);
@@ -64,7 +64,7 @@ class AuthService {
                     OTPCode: OTPCode,
                     expireAt: RequestOTP.expireAt
                 },
-                message: `Vui lòng gọi đến <a href="tel:${number}">${number}</a> từ số điện thoại ${phone} và nhập mã OTP`
+                message: `Vui lòng gọi đến <a href="tel:${number},${OTPCode}">${number}</a> từ số điện thoại ${phone} và nhập mã OTP`
             }
         }
 
