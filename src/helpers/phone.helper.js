@@ -9,6 +9,12 @@ const detectPhone = (str) => {
       return "";
     }
     str  = str.replace(". ", "").replace(/\s+/g, "");
+    // Nếu SĐT có hơn 13 ký tự. Ex: 840919967227312
+    // Loại bỏ 840 ở đầu (Stringee Bugs)
+    if(str.length > 13) {
+      if(str.startsWith('840')) return str.substring(3, str.length);
+      return str;
+    }
     if(str.substring(0, 1) === '0') {
         return '84' + str.replace(/\s+/g, "").substring(1, str.length);
     }
@@ -18,13 +24,6 @@ const detectPhone = (str) => {
     if(str.substring(0, 3) === '+84') {
       return '84' + str.replace(/\s+/g, "").substring(3, str.length);
     }
-    // Nếu SĐT có hơn 13 ký tự. Ex: 840919967227312
-    // Loại bỏ 840 ở đầu (Stringee Bugs)
-    if(str.length > 13) {
-      if(str.startsWith('840')) return str.substring(3, str.length);
-      return str;
-    }
-
     return str;
 
   }
