@@ -35,10 +35,10 @@ const number_anwser_url = async(req, res, next) => {
         const getOTPCode = await AuthService.handleIncommingCall(from, to);
         // getStringeeSCCOInCall2OTP
         if(getOTPCode.type === "incall") {
-            return res.send(StringeeService.getStringeeSCCOInCallOTP(getOTPCode.authToken, from, to))
+            return res.send(StringeeService.getStringeeSCCOInCallOTP(getOTPCode.authToken, from, to, getOTPCode.lang))
         }
         if(getOTPCode.type === "incall2") {
-            return res.send(StringeeService.getStringeeSCCOInCall2OTP(getOTPCode.otpCode))
+            return res.send(StringeeService.getStringeeSCCOInCall2OTP(getOTPCode.otpCode, getOTPCode.lang))
         }
         return res.status(403).send();
     } catch (error) {
@@ -91,7 +91,7 @@ const number_event_dtmf_url = async(req, res) => {
          return res.send([
              {   
                  "action": "play",
-                 "fileName": STRINGEE_AUDIO_FILE.STRINGEE_VERIFY_SUCCESS_FILE_ID,
+                 "fileName": STRINGEE_AUDIO_FILE.vn.STRINGEE_VERIFY_SUCCESS_FILE_ID,
                  "bargeIn": true,
                  "continueWhilePlay": false
      
@@ -104,7 +104,7 @@ const number_event_dtmf_url = async(req, res) => {
        return res.send([
         {   
             "action": "play",
-            "fileName": STRINGEE_AUDIO_FILE.STRINGEE_VERIFY_FAILED_FILE_ID,
+            "fileName": STRINGEE_AUDIO_FILE.vn.STRINGEE_VERIFY_FAILED_FILE_ID,
             "bargeIn": true,
             "continueWhilePlay": false
         }

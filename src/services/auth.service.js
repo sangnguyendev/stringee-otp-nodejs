@@ -22,8 +22,8 @@ class AuthService {
         if (!phone) throw new BadRequestError("phone là bắt buộc");
         if (!ip) throw new BadRequestError("ip là bắt buộc");
         if (!type) throw new BadRequestError("type là bắt buộc");
-         /** Số điện thoại theo định dạng mã quốc gia 84xxxx */
-        const PhoneLocal = PhoneHelper.detectPhone(phone);
+        /** Số điện thoại theo định dạng mã quốc gia 84xxxx */
+        const PhoneLocal = this.validatePhone(phone);
        
         var Now = new Date();
         Now.setMinutes(Now.getMinutes() - 5);
@@ -44,6 +44,8 @@ class AuthService {
         // mã AuthToken ngẫu nhiên dùng xác minh request
         const AuthToken = randomstring.generate(20);
 
+        const lang = this.isVietnamesePhone(PhoneLocal) ? "vn" : "en";
+
         const RequestOTP = await OTPRequestModel.create({
             phone: PhoneLocal,
             otpCode: OTPCode,
@@ -51,9 +53,10 @@ class AuthService {
             ip: ip,
             authToken: AuthToken,
             expireAt: expireAt,
-            type: type
+            type: type,
+            lang: lang
         });
-        const number = PhoneHelper.decodePhone(STRINGEE_NUMBER);
+        const number = lang === "vn" ? PhoneHelper.decodePhone(STRINGEE_NUMBER) : `+${STRINGEE_NUMBER}`;
 
         if(type === "incall") {
             // nếu là loại incall thì yêu cầu user gọi đến tổng đài để xác minh, trả về mã otp để hiển thị trên màn hình ứng dụng
@@ -67,7 +70,7 @@ class AuthService {
                     OTPCode: OTPCode,
                     expireAt: RequestOTP.expireAt
                 },
-                message: `Vui lòng gọi đến <a href="tel:${number},${OTPCode}">${number}</a> từ số điện thoại ${phone} và nhập mã OTP`
+                message: lang === "vn" ? `Vui lòng gọi đến <a href="tel:${number},${OTPCode}">${number}</a> từ số điện thoại ${phone} và nhập mã OTP` : `Please call <a href="tel:${number},${OTPCode}">${number}</a> from phone number ${phone} and enter the OTP code`
             }
         }
 
@@ -83,13 +86,13 @@ class AuthService {
                     OTPCode: null,
                     expireAt: RequestOTP.expireAt
                 },
-                message: `Vui lòng gọi đến <a href="tel:${number}">${number}</a> từ số điện thoại ${phone} để nghe mã OTP`
+                message: lang === "vn" ? `Vui lòng gọi đến <a href="tel:${number}">${number}</a> từ số điện thoại ${phone} để nghe mã OTP` : `Please call <a href="tel:${number}">${number}</a> from phone number ${phone} to hear the OTP code`
             }
         }
 
 
         // nếu là loại outcall thì thực hiện cuộc gọi từ tổng đài đến user để phát mã otp, lưu ý không trả về mã otp qua api trong trường hợp này
-        await StringeeService.makeOutCallOTP(OTPCode, phone);
+        await StringeeService.makeOutCallOTP(OTPCode, phone, lang);
         return {
             status: 'success',
             data: {
@@ -98,7 +101,7 @@ class AuthService {
                 OTPCode: null,
                 expireAt: RequestOTP.expireAt
             },
-            message: `Vui lòng nhập mã OTP đã được gửi đến qua cuộc gọi`
+            message: lang === "vn" ? `Vui lòng nhập mã OTP đã được gửi đến qua cuộc gọi` : `Please enter the OTP code that was sent to you via call`
         }
         
 
@@ -127,7 +130,7 @@ class AuthService {
             throw new BadRequestError(`Bạn đã nhập sai mã OTP quá 5 lần, vui lòng thử lại sau 3 phút`);
         }
         // trả về mã OTP để Stringee phát mã OTP hoặc chờ nhập OTP trên bàn phím
-        return {otpCode: RequestOTP.otpCode, authToken: RequestOTP.authToken, type: RequestOTP.type};
+        return {otpCode: RequestOTP.otpCode, authToken: RequestOTP.authToken, type: RequestOTP.type, lang: RequestOTP.lang};
 
     }
 
@@ -158,7 +161,7 @@ class AuthService {
             throw new BadRequestError(`Bạn đã nhập sai mã OTP quá 5 lần, vui lòng thử lại sau 3 phút`);
         }
         const formatedOTPCode = otpCode.replace("#", "");
-        const isMatch = await bcrypt.compare(formatedOTPCode, RequestOTP.otpCodeHash);
+        const isMatch = (formatedOTPCode === RequestOTP.otpCode);
         if (!isMatch) {
             await OTPRequestModel.findByIdAndUpdate(RequestOTP._id, { $inc: {failedCount: 1} });
             throw new BadRequestError(`Mã OTP không hợp lệ, bạn còn ${maxVerifyCount - (RequestOTP.failedCount + 1)} lần thử`);
@@ -223,6 +226,35 @@ class AuthService {
         });
         return {accessToken};
     
+    }
+
+    /**
+     * Validate phone number, including international format or not
+     * @param {string} phone 
+     * @returns {string} phone number
+     */
+    validatePhone(phone) {
+        if (!phone) {
+            throw new BadRequestError("Số điện thoại là bắt buộc");
+        }
+        const PhoneLocal = PhoneHelper.detectPhone(phone);
+        if (!/^\+?[0-9]{10,15}$/.test(PhoneLocal)) {
+            throw new BadRequestError("Số điện thoại không hợp lệ");
+        }
+        return PhoneLocal;
+    }
+
+    /**
+     * Kiểm tra số điện thoại là số Việt Nam, bắt đầu bằng 84 hoặc +84 hoặc 0
+     * @param {string} phone 
+     * @returns {boolean}
+     */
+    isVietnamesePhone(phone) {
+        if (!phone) {
+            throw new BadRequestError("Số điện thoại là bắt buộc");
+        }
+        const PhoneLocal = PhoneHelper.detectPhone(phone);
+        return /^84[0-9]{9}$/.test(PhoneLocal) || /^\+84[0-9]{9}$/.test(PhoneLocal);
     }
 
 

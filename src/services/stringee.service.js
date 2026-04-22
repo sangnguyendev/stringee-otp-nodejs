@@ -9,13 +9,14 @@ class StringeeService {
      * Thực hiện cuộc gọi ra phát mã otp
      * @param {string} otpCode 
      * @param {string} phone
+     * @param {'vn' | 'en'} lang 
      * @returns {Promise<{callId: string}>}
      */
-    async makeOutCallOTP(otpCode, phone) {
+    async makeOutCallOTP(otpCode, phone, lang = "vn") {
 
         if(!STRINGEE_NUMBER) throw new Error(`Stringee Number chưa được cấu hình`);
         const StringeeAPIURL = `https://api.stringee.com/v1/call2/callout`;
-        const otpNumbers = STRINGEE_AUDIO_FILE.STRINGEE_OTP_FILE;
+        const otpNumbers = STRINGEE_AUDIO_FILE[lang].STRINGEE_OTP_FILE;
 
         const codeNumbers = otpCode.split("");
         let codeNumberPlay = [];
@@ -40,7 +41,7 @@ class StringeeService {
             },
             {
                 "action": "play",
-                "fileName": STRINGEE_AUDIO_FILE.STRINGEE_GREETING_OUTPUT_OTP_FILE_ID, // lời chào
+                "fileName": STRINGEE_AUDIO_FILE[lang].STRINGEE_GREETING_OUTPUT_OTP_FILE_ID, // lời chào
                 "continueWhilePlay": false
             }
         ];
@@ -84,15 +85,16 @@ class StringeeService {
      * @param {string} authToken 
      * @param {string} phone 
      * @param {string} number 
+     * @param {'vn' | 'en'} lang 
      * @returns 
      */
-    getStringeeSCCOInCallOTP(authToken, phone, number) {
+    getStringeeSCCOInCallOTP(authToken, phone, number, lang = "vn") {
 
         const eventUrl = `${process.env.BASE_API_DOMAIN}/1.0/webhook/number_event_dtmf_url?from=${phone}&to=${number}`;
         var actions = [
             {
                 "action": "play",
-                "fileName": STRINGEE_AUDIO_FILE.STRINGEE_GREETING_INPUT_OTP_FILE_ID, // lời chào
+                "fileName": STRINGEE_AUDIO_FILE[lang].STRINGEE_GREETING_INPUT_OTP_FILE_ID, // lời chào
             },
             {
                 "action": "input",
@@ -110,11 +112,12 @@ class StringeeService {
     /**
      * Lấy SCCO phát mã OTP
      * @param {string} otpCode 
+     * @param {'vn' | 'en'} lang 
      * @returns 
      */
-    getStringeeSCCOInCall2OTP(otpCode) {
+    getStringeeSCCOInCall2OTP(otpCode, lang = "vn") {
 
-        const otpNumbers = STRINGEE_AUDIO_FILE.STRINGEE_OTP_FILE;
+        const otpNumbers = STRINGEE_AUDIO_FILE[lang].STRINGEE_OTP_FILE;
 
         const codeNumbers = otpCode.split("");
         let codeNumberPlay = [];
@@ -138,7 +141,7 @@ class StringeeService {
             },
             {
                 "action": "play",
-                "fileName": STRINGEE_AUDIO_FILE.STRINGEE_GREETING_OUTPUT_OTP_FILE_ID, // lời chào
+                "fileName": STRINGEE_AUDIO_FILE[lang].STRINGEE_GREETING_OUTPUT_OTP_FILE_ID, // lời chào
                 "continueWhilePlay": false
             }
         ];
