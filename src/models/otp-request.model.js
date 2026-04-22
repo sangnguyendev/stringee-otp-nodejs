@@ -50,6 +50,11 @@ const OTPRequestSchema = new mongoose.Schema( {
     isVerified: {
         type: Boolean,
         default: false
+    },
+    lang: {
+        type: String,
+        enum: ["vn", "en"],
+        default: "vn"
     }
 }, {versionKey: false, timestamps: true});
 // Chỉ mục TTL và chỉ mục tổng hợp
