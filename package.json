@@ -31,6 +31,7 @@
     "request-ip": "^3.3.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "eslint": "^9.20.0",
     "globals": "^15.14.0",
     "nodemon": "^3.1.9"

@@ -161,7 +161,7 @@ class AuthService {
             throw new BadRequestError(`Bạn đã nhập sai mã OTP quá 5 lần, vui lòng thử lại sau 3 phút`);
         }
         const formatedOTPCode = otpCode.replace("#", "");
-        const isMatch = await bcrypt.compare(formatedOTPCode, RequestOTP.otpCodeHash);
+        const isMatch = (formatedOTPCode === RequestOTP.otpCode);
         if (!isMatch) {
             await OTPRequestModel.findByIdAndUpdate(RequestOTP._id, { $inc: {failedCount: 1} });
             throw new BadRequestError(`Mã OTP không hợp lệ, bạn còn ${maxVerifyCount - (RequestOTP.failedCount + 1)} lần thử`);
