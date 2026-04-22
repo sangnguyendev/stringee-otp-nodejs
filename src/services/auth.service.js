@@ -22,8 +22,8 @@ class AuthService {
         if (!phone) throw new BadRequestError("phone là bắt buộc");
         if (!ip) throw new BadRequestError("ip là bắt buộc");
         if (!type) throw new BadRequestError("type là bắt buộc");
-         /** Số điện thoại theo định dạng mã quốc gia 84xxxx */
-        const PhoneLocal = PhoneHelper.detectPhone(phone);
+        /** Số điện thoại theo định dạng mã quốc gia 84xxxx */
+        const PhoneLocal = this.validatePhone(phone);
        
         var Now = new Date();
         Now.setMinutes(Now.getMinutes() - 5);
@@ -223,6 +223,22 @@ class AuthService {
         });
         return {accessToken};
     
+    }
+
+    /**
+     * Validate phone number, including international format or not
+     * @param {string} phone 
+     * @returns {string} phone number
+     */
+    validatePhone(phone) {
+        if (!phone) {
+            throw new BadRequestError("Số điện thoại là bắt buộc");
+        }
+        const PhoneLocal = PhoneHelper.detectPhone(phone);
+        if (!/^\+?[0-9]{10,15}$/.test(PhoneLocal)) {
+            throw new BadRequestError("Số điện thoại không hợp lệ");
+        }
+        return PhoneLocal;
     }
 
 
