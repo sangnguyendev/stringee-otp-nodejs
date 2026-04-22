@@ -1,17 +1,12 @@
 const mongoose = require('mongoose');
 const appDB = require('../configs/database/mongodb.init');
 const OTPRequestSchema = new mongoose.Schema( {
+    // Chấp nhận số điện thoại quốc tế
     phone: {
         type: String,
         index: true,
         required: true,
-        maxlength: 11,
-        validate: {
-            validator: function (v) {
-                return /^(\+84|0|84)[0-9]{9,10}$/.test(v); // Kiểm tra định dạng số điện thoại Việt Nam
-            },
-            message: props => `${props.value} không phải là số điện thoại hợp lệ!`
-        }
+        maxlength: 12,
     },
     otpCode: {
         type: String,
