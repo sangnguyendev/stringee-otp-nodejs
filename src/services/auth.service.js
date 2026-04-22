@@ -56,7 +56,7 @@ class AuthService {
             type: type,
             lang: lang
         });
-        const number = lang === "vn" ? PhoneHelper.decodePhone(STRINGEE_NUMBER) : `${STRINGEE_NUMBER}`;
+        const number = lang === "vn" ? PhoneHelper.decodePhone(STRINGEE_NUMBER) : `+${STRINGEE_NUMBER}`;
 
         if(type === "incall") {
             // nếu là loại incall thì yêu cầu user gọi đến tổng đài để xác minh, trả về mã otp để hiển thị trên màn hình ứng dụng
