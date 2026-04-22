@@ -6,19 +6,63 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <style lang="css">
+        .select-lang {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+    </style>
+    <script lang="javascript">
+        const text = {
+            vn: {
+            title: "STRINGEE OTP IN CALL-2 SAMPLE",
+            message: "Bạn cần gọi đến số tổng đài để nghe mã OTP",
+            inputPhone: "Số điện thoại",
+            inputOtp: "Mã OTP",
+            submit: "Tiếp tục",
+            verify: "Xác minh",
+            verifyCall:
+                'Vui lòng gọi đến <a href="tel:${number},${OTPCode}">${number}</a> từ số điện thoại ${phone} và nhập mã OTP',
+            verifyCall2:
+                'Vui lòng gọi đến <a href="tel:${number}">${number}</a> từ số điện thoại ${phone} để nghe mã OTP',
+            },
+            en: {
+            title: "STRINGEE OTP IN CALL-2 SAMPLE",
+            message:
+                "You need to call the switchboard number to verify the OTP code",
+            inputPhone: "Phone number",
+            inputOtp: "OTP code",
+            submit: "Continue",
+            verify: "Verify",
+            verifyCall:
+                'Please call <a href="tel:${number},${OTPCode}">${number}</a> from phone number ${phone} and enter the OTP code',
+            verifyCall2:
+                'Please call <a href="tel:${number}">${number}</a> from phone number ${phone} to hear the OTP code',
+            },
+        };
+    </script>
     </head>
     <body style="color: white; background-color: #607D8B; margin-top: 50px;">
 
         <div style="text-align: center;">
             <div>
-                <h2>STRINGEE OTP IN CALL SAMPLE</h2>
-                <p>Bạn cần gọi đến tổng đài để nghe mã OTP</p>
+                <select class="select-lang" id="lang" onchange="setLanguage(this.value)">
+                    <option value="vn">Tiếng Việt</option>
+                    <option value="en">English</option>
+                </select>
             </div>
-            <div>
-                <h2>Vui lòng nhập số điện thoại để tiếp tục</h2>
+                <h2 id="title">STRINGEE OTP IN CALL-2 SAMPLE</h2>
+                <p id="message">Bạn cần gọi đến số tổng đài để nghe mã OTP</p>
+            </div>
+            <div style="margin: 0 auto; max-width: 500px; text-align: center;"  >
+                <h2 id="inputPhone">Vui lòng nhập số điện thoại để tiếp tục</h2>
                 <div>
                     <input style="padding: 10px;
-                        font-size: 1.2em" autocomplete="tel" type="tel" id="phone" placeholder="Số điện thoại">
+                        font-size: 1.2em" autocomplete="tel" type="tel" id="phone" placeholder="+84xxxxxxxxxx">
                     <br>
                 </div>
                 <div style="margin: 20px ;">
@@ -128,7 +172,15 @@
 
         }
 
-
+        function setLanguage(value) {
+            lang = value;
+            document.getElementById("title").innerHTML = text[lang].title;
+            document.getElementById("message").innerHTML = text[lang].message;
+            document.getElementById("inputPhone").innerHTML = text[lang].inputPhone;
+            document.getElementById("inputOtp").placeholder = text[lang].inputOtp;
+            document.getElementById("submit").innerHTML = text[lang].submit;
+            document.getElementById("verify").innerHTML = text[lang].verify;
+        }
     </script>
 
 </html>
