@@ -56,7 +56,7 @@ class AuthService {
             type: type,
             lang: lang
         });
-        const number = lang === "vn" ? PhoneHelper.decodePhone(STRINGEE_NUMBER) : `+${STRINGEE_NUMBER}`;
+        const number = lang === "vn" ? PhoneHelper.decodePhone(STRINGEE_NUMBER) : `${STRINGEE_NUMBER}`;
 
         if(type === "incall") {
             // nếu là loại incall thì yêu cầu user gọi đến tổng đài để xác minh, trả về mã otp để hiển thị trên màn hình ứng dụng
@@ -123,11 +123,12 @@ class AuthService {
         }
 
         const RequestOTP = await OTPRequestModel.findOne({phone: PhoneLocal}).sort({createdAt: -1}).lean();
+        const lang = RequestOTP?.lang || "vn";
         if(!RequestOTP) {
-            throw new BadRequestError(`Yêu cầu không hợp lệ hoặc đã hết hạn, vui lòng thử lại`);
+            throw new BadRequestError(lang === "vn" ? `Yêu cầu không hợp lệ hoặc đã hết hạn, vui lòng thử lại` : `Request not found or expired, please try again`);
         }
         if(RequestOTP.failedCount >= 5) {
-            throw new BadRequestError(`Bạn đã nhập sai mã OTP quá 5 lần, vui lòng thử lại sau 3 phút`);
+            throw new BadRequestError(lang === "vn" ? `Bạn đã nhập sai mã OTP quá 5 lần, vui lòng thử lại sau 3 phút` : `You have entered the OTP code incorrectly 5 times, please try again after 3 minutes`);
         }
         // trả về mã OTP để Stringee phát mã OTP hoặc chờ nhập OTP trên bàn phím
         return {otpCode: RequestOTP.otpCode, authToken: RequestOTP.authToken, type: RequestOTP.type, lang: RequestOTP.lang};
@@ -147,24 +148,25 @@ class AuthService {
         // số lần nhập sai mã OTP có thể thử
         const maxVerifyCount = 5;
 
-        if (!authToken || !otpCode) throw new BadRequestError("authToken và otpCode là bắt buộc");
-        if(!phone) throw new BadRequestError("phone là bắt buộc");
+        if (!authToken || !otpCode) throw new BadRequestError(lang === "vn" ? "authToken và otpCode là bắt buộc" : "authToken and otpCode are required");
+        if(!phone) throw new BadRequestError(lang === "vn" ? "phone là bắt buộc" : "phone is required");
         const PhoneLocal = PhoneHelper.detectPhone(phone);
         const RequestOTP = await OTPRequestModel.findOne({authToken: authToken, phone: PhoneLocal}).lean();
+        const lang = RequestOTP?.lang || "vn";
         if(!RequestOTP) {
-            throw new ForbiddenError(`Yêu cầu không hợp lệ hoặc đã hết hạn, vui lòng thử lại`);
+            throw new ForbiddenError(lang === "vn" ? `Yêu cầu không hợp lệ hoặc đã hết hạn, vui lòng thử lại` : `Request not found or expired, please try again`);
         }
         if(RequestOTP.isVerified) {
-            throw new BadRequestError(`Bạn đã xác minh số điện thoại rồi`);
+            throw new BadRequestError(lang === "vn" ? `Bạn đã xác minh số điện thoại rồi` : `You have verified your phone number`);
         }
         if(RequestOTP.failedCount >= maxVerifyCount) {
-            throw new BadRequestError(`Bạn đã nhập sai mã OTP quá 5 lần, vui lòng thử lại sau 3 phút`);
+            throw new BadRequestError(lang === "vn" ? `Bạn đã nhập sai mã OTP quá 5 lần, vui lòng thử lại sau 3 phút` : `You have entered the OTP code incorrectly 5 times, please try again after 3 minutes`);
         }
         const formatedOTPCode = otpCode.replace("#", "");
         const isMatch = (formatedOTPCode === RequestOTP.otpCode);
         if (!isMatch) {
             await OTPRequestModel.findByIdAndUpdate(RequestOTP._id, { $inc: {failedCount: 1} });
-            throw new BadRequestError(`Mã OTP không hợp lệ, bạn còn ${maxVerifyCount - (RequestOTP.failedCount + 1)} lần thử`);
+            throw new BadRequestError(lang === "vn" ? `Mã OTP không hợp lệ, bạn còn ${maxVerifyCount - (RequestOTP.failedCount + 1)} lần thử` : `Invalid OTP code, you have ${maxVerifyCount - (RequestOTP.failedCount + 1)} attempts left`);
         }
         await OTPRequestModel.findByIdAndUpdate(RequestOTP._id, {  isVerified: true });
         /** Trả về access token và refresh token, authToken để khôi phục mật khẩu nếu cần */
@@ -174,7 +176,7 @@ class AuthService {
         }
         const tokens = this.generateTokens({payload});
 
-        return {status: 'success', message: 'Đăng nhập thành công', data: {...tokens, authToken}};
+        return {status: 'success', message: lang === "vn" ? "Đăng nhập thành công" : "Login success", data: {...tokens, authToken}};
 
     }
 

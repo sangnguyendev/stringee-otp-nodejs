@@ -6,7 +6,7 @@ const OTPRequestSchema = new mongoose.Schema( {
         type: String,
         index: true,
         required: true,
-        maxlength: 12,
+        maxlength: 15,
     },
     otpCode: {
         type: String,

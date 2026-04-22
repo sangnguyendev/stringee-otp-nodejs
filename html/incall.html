@@ -36,7 +36,7 @@
       const text = {
         vn: {
           title: "STRINGEE OTP IN CALL SAMPLE",
-          message: "Bạn cần gọi đến số tổng đài để xác minh mã OTP",
+          message: "Bạn cần gọi đến số hotline để xác minh mã OTP",
           inputPhone: "Số điện thoại",
           submit: "Tiếp tục",
           verifyCall:
@@ -44,8 +44,7 @@
         },
         en: {
           title: "STRINGEE OTP IN CALL SAMPLE",
-          message:
-            "You need to call the switchboard number to verify the OTP code",
+          message: "You need to call the hotline number to verify the OTP code",
           inputPhone: "Phone number",
           submit: "Continue",
           verifyCall:
@@ -71,19 +70,26 @@
       </div>
       <div>
         <h2 id="title">STRINGEE OTP IN CALL SAMPLE</h2>
-        <p id="message">Bạn cần gọi đến số tổng đài để xác minh mã OTP</p>
+        <p id="message">Bạn cần gọi đến số hotline để xác minh mã OTP</p>
       </div>
       <div>
-        <h2 id="inputPhone">Vui lòng nhập số điện thoại để đăng nhập</h2>
-        <div>
+        <h2 id="inputPhone">Nhập SĐT của bạn</h2>
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+          "
+        >
+          <span>+</span>
           <input
             style="padding: 10px; font-size: 1.2em"
             autocomplete="tel"
             type="tel"
             id="phone"
-            placeholder="+84xxxxxxxxxx"
+            placeholder="84xxxxxxxxxx"
           />
-          <br />
         </div>
         <div style="margin: 20px">
           <button style="font-size: 1.3em" type="button" id="submit">
