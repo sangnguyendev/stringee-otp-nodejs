@@ -1,11 +1,12 @@
 const OTPRequestModel = require("../models/otp-request.model");
 const PhoneHelper = require("../helpers/phone.helper");
 const { BadRequestError, ForbiddenError } = require('../core/error.response');
-const {STRINGEE_NUMBER} = require('../configs/constant/stringee.config');
+const {STRINGEE_NUMBER, N8N_AUTOMATION_WEBHOOK_URL} = require('../configs/constant/stringee.config');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const randomstring = require("randomstring");
 const StringeeService = require('./stringee.service');
+const axios = require('axios');
 
 class AuthService {
 
@@ -56,6 +57,8 @@ class AuthService {
 
         if(type === "incall") {
             // nếu là loại incall thì yêu cầu user gọi đến tổng đài để xác minh, trả về mã otp để hiển thị trên màn hình ứng dụng
+            // send request to n8n webhook
+            this.sendRequestOTPToN8N(PhoneLocal, number, ip, type);
             return {
                 status: 'success',
                 data: {
@@ -70,7 +73,8 @@ class AuthService {
 
          if(type === "incall2") {
             // nếu là loại incall2 thì yêu cầu user gọi đến tổng đài để nghe mã OTP
-
+            // send request to n8n webhook
+            this.sendRequestOTPToN8N(PhoneLocal, number, ip, type);
             return {
                 status: 'success',
                 data: {
@@ -82,6 +86,8 @@ class AuthService {
                 message: `Vui lòng gọi đến <a href="tel:${number}">${number}</a> từ số điện thoại ${phone} để nghe mã OTP`
             }
         }
+
+
         // nếu là loại outcall thì thực hiện cuộc gọi từ tổng đài đến user để phát mã otp, lưu ý không trả về mã otp qua api trong trường hợp này
         await StringeeService.makeOutCallOTP(OTPCode, phone);
         return {
@@ -219,6 +225,35 @@ class AuthService {
     
     }
 
+
+    /**
+     * Gửi thông tin request otp đến n8n webhook
+     * @param {string} phone 
+     * @param {string} number 
+     * @param {string} ip
+     * @param {string} type
+     */
+    async sendRequestOTPToN8N(phone, number, ip, type) {
+        if (!N8N_AUTOMATION_WEBHOOK_URL) {
+            console.warn("N8N_AUTOMATION_WEBHOOK_URL not configured, skipping webhook call");
+            return;
+        }
+
+        const url = `${N8N_AUTOMATION_WEBHOOK_URL}`;
+        const data = {
+            phone,
+            number,
+            ip,
+            type,
+            createdAt: new Date()
+        };
+        try {
+            await axios.post(url, data);
+            console.debug("Sent request OTP to n8n webhook successfully");
+        } catch (error) {
+            console.error("Error sending request OTP to n8n webhook:", error);
+        }
+    }
 }
 
 

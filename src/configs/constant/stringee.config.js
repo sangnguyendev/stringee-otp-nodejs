@@ -19,5 +19,6 @@ module.exports = {
             8: process.env.STRINGEE_OTP_8_FILE_ID,
             9: process.env.STRINGEE_OTP_9_FILE_ID
         }
-    }
+    },
+    N8N_AUTOMATION_WEBHOOK_URL: process.env.N8N_AUTOMATION_WEBHOOK_URL
 };
