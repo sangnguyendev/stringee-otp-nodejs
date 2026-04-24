@@ -33,6 +33,10 @@ const number_anwser_url = async(req, res, next) => {
     try {
         const {from, to} = req.query;
         const getOTPCode = await AuthService.handleIncommingCall(from, to);
+        if(!getOTPCode) {
+            // lấy SCCO mặc định để trả về
+            return res.send(StringeeService.getStringeeSCCODefault(from, to, 'vn'));
+        }
         // getStringeeSCCOInCall2OTP
         if(getOTPCode.type === "incall") {
             return res.send(StringeeService.getStringeeSCCOInCallOTP(getOTPCode.authToken, from, to, getOTPCode.lang))

@@ -125,7 +125,8 @@ class AuthService {
         const RequestOTP = await OTPRequestModel.findOne({phone: PhoneLocal}).sort({createdAt: -1}).lean();
         const lang = RequestOTP?.lang || "vn";
         if(!RequestOTP) {
-            throw new BadRequestError(lang === "vn" ? `Yêu cầu không hợp lệ hoặc đã hết hạn, vui lòng thử lại` : `Request not found or expired, please try again`);
+            // nếu caller này chưa thực hiện lệnh xác minh mã OTP mà gọi trực tiếp đến tổng đài thì trả về null
+            return null;
         }
         if(RequestOTP.failedCount >= 5) {
             throw new BadRequestError(lang === "vn" ? `Bạn đã nhập sai mã OTP quá 5 lần, vui lòng thử lại sau 3 phút` : `You have entered the OTP code incorrectly 5 times, please try again after 3 minutes`);

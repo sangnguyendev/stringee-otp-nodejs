@@ -153,6 +153,41 @@ class StringeeService {
     }
 
     /**
+     * Lấy SCCO báo lỗi mặc định khi user gọi đến tổng đài không thực hiện lệnh xác minh mã OTP
+     * @param {string} phone 
+     * @param {string} number 
+     * @param {'vn' | 'en'} lang
+     * @returns 
+     */
+    getStringeeSCCODefault(phone, number, lang = "vn") {
+
+        return [
+            {
+                "action": "play",
+                "fileName": STRINGEE_AUDIO_FILE[lang].STRINGEE_GREETING_DEFAULT_FILE_ID,
+                "continueWhilePlay": true
+            },
+            {
+                "action": "connect",
+                "from": {
+                    "type": "external",
+                    "number": phone,
+                    "alias": phone
+                },
+                "to": {
+                    "type": "internal",
+                    "number": number,
+                    "alias": number
+                },
+                "customData": JSON.stringify({msg: 'Người dùng gọi đến tổng đài nhưng không thực hiện lệnh xác minh mã OTP', number: number, phone: phone, lang: lang}),
+                "timeout": 60,
+                "maxConnectTime": 0,
+                "peerToPeerCall": false
+            }
+        ];
+    }
+
+    /**
      * get Stringee Token, cached lại trong db nếu cần
      * @returns {string} Stringee rest api access token
      */
